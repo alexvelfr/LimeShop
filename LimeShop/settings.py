@@ -25,6 +25,11 @@ SECRET_KEY = 'ajp8a@a81hpj=u@9+af7be64jhirgd0a%+t_(ga%taq3^x_s(p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+AUTHENTICATION_BACKENDS = (
+    'django_python3_ldap.auth.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 ALLOWED_HOSTS = []
 
 
@@ -37,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_python3_ldap',
     'lk.apps.LkConfig',
     'landing.apps.LandingConfig',
 ]
@@ -107,7 +113,7 @@ AUTH_USER_MODEL = 'lk.User'
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -131,3 +137,53 @@ else:
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
+
+###LDAP###
+LDAP_AUTH_URL = os.environ.get('LDAP_URL')
+
+LDAP_AUTH_USE_TLS = False
+
+LDAP_AUTH_SEARCH_BASE = f"OU={os.environ.get('LDAP_OU')},DC={os.environ.get('LDAP_DC')},DC={os.environ.get('LDAP_DCL')}"
+
+LDAP_AUTH_OBJECT_CLASS = "person"
+
+LDAP_AUTH_USER_FIELDS = {
+    "username": "sAMAccountName",
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
+
+LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
+
+LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
+
+LDAP_AUTH_SYNC_USER_RELATIONS = "django_python3_ldap.utils.sync_user_relations"
+
+LDAP_AUTH_FORMAT_SEARCH_FILTERS = "django_python3_ldap.utils.format_search_filters"
+
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory"
+
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = os.environ.get('LDAP_DOMAIN')
+
+LDAP_AUTH_CONNECTION_USERNAME = None
+LDAP_AUTH_CONNECTION_PASSWORD = None
+
+LDAP_AUTH_CONNECT_TIMEOUT = 5
+LDAP_AUTH_RECEIVE_TIMEOUT = 5
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django_python3_ldap": {
+            "handlers": ['console'],
+            "level": 'INFO',
+        },
+    },
+}

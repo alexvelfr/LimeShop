@@ -1,0 +1,99 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="body-wrap"
+                   style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; background-color: #181b2e; margin: 0;"
+                   bgcolor="#f2f5f7">
+                <tbody>
+                <tr>
+                    <td class="container"
+                        style=" display: block !important; max-width: 600px !important; clear: both !important; "
+                        width="600" valign="top">
+                        <div class="content" style="padding: 20px;">
+                            <table class="main" style="border: 1px solid #313656;" width="100%" cellspacing="0"
+                                   cellpadding="0" bgcolor="#181b31">
+
+                                <tbody>
+                                <tr>
+                                    <td class="alert alert-primary border-0 bg-primary"
+                                        style="padding: 20px; border-radius: 0;" valign="top" align="center">
+                                        <img src="{% static 'images/bell.png' %}" alt=""
+                                             style="margin-left: auto; margin-right: auto; display:block;width: 60px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="alert alert-dark border-0"
+                                        style="color:#d8c751; padding: 20px; border-radius: 0; background-color: #20233a;"
+                                        valign="top" align="center">
+                                        Введите пожалуйста Ваш номер телефона. В дальнейшем Вы смоежете использовать его
+                                        в качестве логина
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-wrap" style="padding: 20px;" valign="top">
+                                        <table width="100%" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                            <tr>
+                                                <td class="content-block"
+                                                    style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; padding: 10px"
+                                                    valign="top">
+                                                    You have <strong
+                                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">1
+                                                    free report</strong> remaining.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="content-block"
+                                                    style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; padding: 10px 10px 20px;"
+                                                    valign="top">
+                                                    Add your credit card now to upgrade your account to a premium plan
+                                                    to ensure you don't miss out on any reports.
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="content-block"
+                                                    style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; padding: 0 0 20px;"
+                                                    valign="top">
+{#                                                    TODO: here#}
+                                                    <input type="submit" class="btn-primary w-100 h">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="content-block"
+                                                    style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 14px; text-align: center;"
+                                                    valign="top">
+                                                    Thanks for choosing <b>Frogetor</b> Admin.
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                    <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;"
+                        valign="top"></td>
+                </tr>
+                </tbody>
+            </table><!--end table-->
+        </div><!--end col-->
+    </div>
+
+
+
+
+
+
+    <div class="card-body">
+        <form action="{% url 'set_phone' %}" method="post">
+            <div class="form-group">
+                {{ form.phone_number }}
+            </div>
+
+        </form>
+    </div>
+{% endblock %}
