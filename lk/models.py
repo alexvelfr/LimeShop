@@ -33,7 +33,7 @@ class Product(models.Model):
 
 class ProductSeries(models.Model):
     number = models.IntegerField(verbose_name='Номер серии', unique=True)
-    price = models.DecimalField(verbose_name='Цена', max_digits=10, decimal_places=2)
+    price = models.DecimalField(verbose_name='Цена', max_digits=10, decimal_places=2, null=True)
     count = models.IntegerField(verbose_name='Остаток', blank=False)
     product = models.ForeignKey(Product, related_name='product_series', verbose_name='Товар', on_delete=models.CASCADE)
 
@@ -48,7 +48,7 @@ class ProductSeries(models.Model):
 class Order(models.Model):
     date = models.DateTimeField(verbose_name='Дата заказа', auto_now_add=True)
     user = models.ForeignKey(User, verbose_name='Пользователь', related_name='orders', on_delete=models.CASCADE)
-    amount = models.DecimalField(verbose_name='Сумма заказа', max_digits=10, decimal_places=2, blank=True)
+    amount = models.DecimalField(verbose_name='Сумма заказа', max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return f'Заказ от {self.date.strftime("%Y.%m.%d %H:%M:%S")} пользователь {self.user}'
@@ -63,17 +63,20 @@ class OrderItems(models.Model):
     series = models.ForeignKey(ProductSeries, related_name='products_in_order', verbose_name='Серия', on_delete=models.CASCADE)
     count = models.IntegerField(verbose_name='Кол-во', blank=False)
     price = models.DecimalField(verbose_name='Цена', blank=True, max_digits=10, decimal_places=2)
+    success = models.BooleanField(verbose_name='Проведен', default=False)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         self.price = self.series.price * self.count
+        if not self.success:
+            # Спишем остаток
+            self.series.count -= self.count
+            self.series.save()
+            # Обновим сумму в заказе
+            self.order.amount = self.order.order_items.aggregate(Sum('price')).get('price__sum')
+            self.order.save()
+            self.success = True
         super().save()
-        # Спишем остаток
-        self.series.count -= self.count
-        self.series.save()
-        # Обновим сумму в заказе
-        self.order.amount = self.order.order_items.aggregate(Sum('price')).get('price__sum')
-        self.order.save()
 
     def __str__(self):
         return f'{self.series} {self.price}грн. {self.order}'
@@ -82,3 +85,26 @@ class OrderItems(models.Model):
         verbose_name = 'Товар в заказе'
         verbose_name_plural = 'Товары в заказе'
 
+
+class PostingGoods(models.Model):
+    series = models.ForeignKey(ProductSeries, related_name='products_in_posting', verbose_name='Серия',
+                               on_delete=models.CASCADE)
+    count = models.IntegerField(verbose_name='Кол-во', blank=False)
+    price = models.DecimalField(verbose_name='Цена закупки', max_digits=10, decimal_places=2)
+    success = models.BooleanField(verbose_name='Проведен', default=False)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.success:
+            # Пополним остаток
+            self.success = True
+            self.series.count += self.count
+            self.series.save()
+        super().save()
+
+    def __str__(self):
+        return f'{self.series}; {self.count}шт; по {self.price} грн.'
+
+    class Meta:
+        verbose_name = 'Поступление товара'
+        verbose_name_plural = 'Поступление товаров'

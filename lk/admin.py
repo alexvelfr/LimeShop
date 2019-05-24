@@ -6,7 +6,17 @@ from .models import *
 
 class OrderItemsAdmin(admin.ModelAdmin):
     model = OrderItems
-    exclude = ['price']
+    readonly_fields = ['success', 'price']
+
+
+class ProductSeriesAdmin(admin.ModelAdmin):
+    model = ProductSeries
+    exclude = ['count']
+
+
+class PostingGoodsAdmin(admin.ModelAdmin):
+    model = PostingGoods
+    readonly_fields = ['success']
 
 
 class OrderAdmin(admin.ModelAdmin):
@@ -33,3 +43,4 @@ admin.site.register(OrderItems, OrderItemsAdmin)
 admin.site.register(Product)
 admin.site.register(ProductCategory)
 admin.site.register(ProductSeries)
+admin.site.register(PostingGoods, PostingGoodsAdmin)
