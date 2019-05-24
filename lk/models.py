@@ -68,6 +68,10 @@ class OrderItems(models.Model):
              update_fields=None):
         self.price = self.series.price * self.count
         super().save()
+        # Спишем остаток
+        self.series.count -= self.count
+        self.series.save()
+        # Обновим сумму в заказе
         self.order.amount = self.order.order_items.aggregate(Sum('price')).get('price__sum')
         self.order.save()
 

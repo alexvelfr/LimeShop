@@ -825,7 +825,8 @@ hr {
   min-width: 270px;
   max-width: 270px;
   background-color: #181b2e;
-  min-height: calc(100vh - 70px);
+  min-height: 350px;
+  /*min-height: calc(100vh - 70px);*/
   -webkit-box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0 0 rgba(0, 0, 0, 0.02);
           box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.06), 0 1px 0 0 rgba(0, 0, 0, 0.02);
   -webkit-transition: .3s;

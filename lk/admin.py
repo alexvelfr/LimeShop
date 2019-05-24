@@ -23,6 +23,10 @@ class OrderAdmin(admin.ModelAdmin):
         )
 
 
+admin.site.site_header = 'Админ панель Lime Shop'
+admin.site.site_title = 'Админ панель Lime Shop'
+admin.site.index_title = 'Админ панель Lime Shop'
+
 admin.site.register(User)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItems, OrderItemsAdmin)

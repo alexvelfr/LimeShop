@@ -1,0 +1,48 @@
+{% extends 'lk/base.html' %}
+{% load static %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- BODY -->
+                    <div class="table-responsive">
+                        <table class="table mb-0 table-centered text-warning">
+                            <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Товар</th>
+                                <th>Кол-во</th>
+                                <th>Сумма</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td class="text-success">{{item.order.date}}</td>
+                                    <td class="text-success">{{item.series.product}}</td>
+                                    <td class="text-success">{{item.count}}</td>
+                                    <td class="text-success">{{item.price}} грн.</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Итого:</th>
+                                <th></th>
+                                <th></th>
+                                <th>{{total_amount}} грн.</th>
+                            </tr>
+                        </tfoot>
+                        </table><!--end /table-->
+                    </div>
+                    <!-- END_BODY -->
+                </div><!--end card-body-->
+            </div><!--end card-->
+        </div><!--end col-->
+    </div>
+{% endblock %}

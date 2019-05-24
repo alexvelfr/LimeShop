@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from lk.models import User
 from django_python3_ldap.auth import ldap
 from .forms import SetPhoneForm
@@ -12,11 +12,12 @@ import os
 class AuthView(View):
     def get(self, request, *args, **kwargs):
         ctn = {}
-        print(args)
-        print(kwargs)
+        if 'logout' in request.path:
+            logout(request)
+            return redirect('/auth')
         return render(request, 'registration/login.html', context=ctn)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         ctn = {}
         log = request.POST.get('username').replace(f'@{os.environ.get("DOMAIN")}', '')
         pwd = request.POST.get('password')
@@ -29,9 +30,9 @@ class AuthView(View):
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         if request.user.is_authenticated:
             if not user.phone_number:
-                return redirect('setphone')
+                return redirect('set_phone')
             else:
-                return redirect('/lk')
+                return redirect('/')
         else:
             ctn['errors'] = 'Неверные лоин или пароль'
         return render(request, 'registration/login.html', context=ctn)
@@ -39,12 +40,18 @@ class AuthView(View):
 
 class SetPhone(View):
     def get(self, request):
-        return render(request, 'registration/set_phone.html', context={'form': SetPhoneForm()})
+        form = SetPhoneForm(user=request.user)
+        if request.user.is_authenticated and request.user.phone_number:
+            form.initial = {'phone_number': request.user.phone_number}
+        return render(request, 'registration/set_phone.html', context={'form': form})
 
     def post(self, request):
-        form = SetPhoneForm(data=request.POST)
+        form = SetPhoneForm(data=request.POST, user=request.user)
         if form.is_valid():
-            request.user.phone_number = form.cleaned_data.get('phone_number')
-            request.user.save()
-            return redirect('/lk')
+            user = request.user
+            user.phone_number = form.cleaned_data.get('phone_number')
+            user.set_password(form.cleaned_data.get('password'))
+            user.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect('/')
         return render(request, 'registration/set_phone.html', context={'form': form})

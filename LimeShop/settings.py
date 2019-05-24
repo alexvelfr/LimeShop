@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_python3_ldap',
     'lk.apps.LkConfig',
-    'landing.apps.LandingConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,8 +125,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-LOGIN_REDIRECT_URL = 'lk'
-LOGIN_URL = 'login'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/auth'
 
 STATIC_URL = '/static/'
 
