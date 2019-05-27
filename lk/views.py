@@ -34,7 +34,7 @@ class HistoryView(View):
 
     def get(self, request):
         query = OrderItems.objects.filter(order__user=request.user, order__amount__isnull=False).order_by('-order__date')
-        total_amount = query.aggregate(Sum('price')).get('price__sum')
+        total_amount = query.aggregate(Sum('price')).get('price__sum') or 0
         items = query.all()
         return render(request, template_name='lk/history_order.html', context={
             'title': 'История покупок Lime',

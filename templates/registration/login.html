@@ -9,7 +9,7 @@
     <meta content="Alex" name="author"/>
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
 
     <!-- App css -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
@@ -28,7 +28,7 @@
             <div class="card-body">
                 <div class="px-3">
                     <div class="">
-                        <a href="index.html" class="logo logo-admin"><img src="{% static 'images/logo-sm.png' %}"
+                        <a href="{% url 'index' %}" class="logo logo-admin"><img src="{% static 'images/logo-sm.png' %}"
                                                                           height="55" alt="logo" class="my-3"></a>
                         <div class="media-body ml-3 align-self-center text-center">
                             <h4 class="mt-0 mb-1">Login in Lime Shop</h4>
