@@ -34,11 +34,11 @@ class Product(models.Model):
 class ProductSeries(models.Model):
     number = models.IntegerField(verbose_name='Номер серии', unique=True)
     price = models.DecimalField(verbose_name='Цена', max_digits=10, decimal_places=2, null=True)
-    count = models.IntegerField(verbose_name='Остаток', blank=False)
+    count = models.IntegerField(verbose_name='Остаток', blank=False, default=0)
     product = models.ForeignKey(Product, related_name='product_series', verbose_name='Товар', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.product} №{self.number}'
+        return f'{self.product} №{self.number}; Остаток: {self.count}шт.'
 
     class Meta:
         verbose_name = 'Серия товара'
@@ -73,7 +73,7 @@ class OrderItems(models.Model):
             self.series.count -= self.count
             self.series.save()
             # Обновим сумму в заказе
-            self.order.amount = self.order.order_items.aggregate(Sum('price')).get('price__sum')
+            self.order.amount = (self.order.order_items.aggregate(Sum('price')).get('price__sum') or 0) + self.price
             self.order.save()
             self.success = True
         super().save()
